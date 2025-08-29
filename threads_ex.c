@@ -1,14 +1,23 @@
 #include <stdio.h>
 #include<stdlib.h>
-#include<unistd.h>
 #include<pthread.h>
-void *routine(){
-	printf("Thread\n");
+void * fun(){
+    printf("Siran\n");
 }
-int main(){
-	pthread_t t1,t2;
-	pthread_create(&t1,NULL,&routine,NULL);
-	pthread_join(t1,NULL);
-	pthread_create(&t2,NULL,&routine,NULL);
-	pthread_join(t2,NULL);
+int main()
+{
+    pthread_t t1,t2;
+    if(pthread_create(&t1,NULL,fun,NULL)!=0){
+        return 1;
+    }
+    if(pthread_join(t1,NULL)!=0){
+        return 2;
+    }
+    if(pthread_create(&t2,NULL,fun,NULL)!=0){
+        return 1;
+    }
+    if(pthread_join(t2,NULL)!=0){
+        return 2;
+    }
+    return 0;
 }
