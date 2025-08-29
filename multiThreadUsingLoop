@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include<stdlib.h>
+#include<pthread.h>
+int x=0;
+pthread_mutex_t mutex;
+void *fun1(){
+    for(int i=0;i<1000000;i++){
+        pthread_mutex_lock(&mutex);
+        x+=1;
+        pthread_mutex_unlock(&mutex); 
+    }
+}
+void *fun2(){
+     for(int i=0;i<1000000;i++){
+       pthread_mutex_lock(&mutex);
+       x+=1;
+       pthread_mutex_unlock(&mutex); 
+     }
+}
+int main()
+{
+    pthread_t t[8];
+    pthread_mutex_init(&mutex,NULL);
+    for(int i=0;i<8;i++){
+        if(pthread_create(t+i,NULL,fun1,NULL)!=0){
+            return 1;
+        }
+        printf("%d started\n",i+1);
+    }
+    for(int i=0;i<8;i++){
+        if(pthread_join(t[i],NULL)!=0){
+            return 2;
+        }
+        printf("%d completed\n",i+1);
+    }
+     pthread_mutex_destroy(&mutex);
+    printf("threads x=%d",x);
+    return 0;
+}
